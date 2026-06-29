@@ -3,6 +3,8 @@ from sqlalchemy import text
 import app.models
 
 from app.database.connection import Base, engine
+from app.routes.uploads import router as upload_router
+from app.routes.dashboard import router as dashboard_router
 
 from app.routes import usuarios
 from app.routes import auth
@@ -19,6 +21,8 @@ app = FastAPI(
 app.include_router(usuarios.router)
 app.include_router(auth.router)
 app.include_router(tarefas.router)
+app.include_router(upload_router)
+app.include_router(dashboard_router)
 
 @app.get("/")
 def home():

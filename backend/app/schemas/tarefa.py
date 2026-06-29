@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
+from typing import Literal
 
 
 class TarefaBase(BaseModel):
@@ -9,16 +10,17 @@ class TarefaBase(BaseModel):
     prioridade: str = "Média"
 
 
-class TarefaCreate(TarefaBase):
-    pass
+class TarefaCreate(BaseModel):
+    titulo: str
+    descricao: str
+    prioridade: Literal["Baixa", "Media", "Alta"]
 
 
 class TarefaUpdate(BaseModel):
     titulo: Optional[str] = None
     descricao: Optional[str] = None
-    status: Optional[str] = None
-    prioridade: Optional[str] = None
-    data_conclusao: Optional[datetime] = None
+    prioridade: Optional[Literal["Baixa", "Media", "Alta"]] = None
+    status: Optional[Literal["Pendente", "Em andamento", "Concluida"]] = None
 
 
 class TarefaResponse(TarefaBase):

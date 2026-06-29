@@ -3,6 +3,7 @@ from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 
 from app.database.connection import Base
+from sqlalchemy.orm import relationship
 
 
 class Tarefa(Base):
@@ -29,3 +30,9 @@ class Tarefa(Base):
     )
 
     usuario = relationship("Usuario", back_populates="tarefas")
+
+    arquivos = relationship(
+    "Arquivo",
+    back_populates="tarefa",
+    cascade="all, delete-orphan"
+)

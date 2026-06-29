@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
+from datetime import datetime
 
 from app.database.connection import Base
 
@@ -9,10 +10,23 @@ class Arquivo(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    nome_arquivo = Column(String(255))
+    nome = Column(String(255), nullable=False)
 
-    url_s3 = Column(String(500))
+    caminho = Column(String(500), nullable=False)
 
-    tarefa_id = Column(Integer, ForeignKey("tarefas.id"))
+    tipo = Column(String(100), nullable=False)
 
-    tarefa = relationship("Tarefa")
+    tamanho = Column(Integer, nullable=False)
+
+    data_upload = Column(DateTime, default=datetime.now)
+
+    tarefa_id = Column(
+        Integer,
+        ForeignKey("tarefas.id"),
+        nullable=False
+    )
+
+    tarefa = relationship(
+        "Tarefa",
+        back_populates="arquivos"
+    )
