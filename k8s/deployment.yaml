@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: cloudtask-backend
+  namespace: cloudtask
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: cloudtask-backend
+
+  template:
+    metadata:
+      labels:
+        app: cloudtask-backend
+
+    spec:
+      containers:
+
+      - name: backend
+
+        image: elnvna/cloudtask-ai-saas-backend:latest
+        imagePullPolicy: Always
+
+        ports:
+        - containerPort: 8000
+
+        env:
+
+        - name: DATABASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: cloudtask-config
+              key: DATABASE_URL
+
+        - name: ALGORITHM
+          valueFrom:
+            configMapKeyRef:
+              name: cloudtask-config
+              key: ALGORITHM
+
+        - name: ACCESS_TOKEN_EXPIRE_MINUTES
+          valueFrom:
+            configMapKeyRef:
+              name: cloudtask-config
+              key: ACCESS_TOKEN_EXPIRE_MINUTES
+
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: cloudtask-secret
+              key: SECRET_KEY

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: cloudtask-config
+  namespace: cloudtask
+
+data:
+  DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/cloudtask"
+  ALGORITHM: "HS256"
+  ACCESS_TOKEN_EXPIRE_MINUTES: "30"
