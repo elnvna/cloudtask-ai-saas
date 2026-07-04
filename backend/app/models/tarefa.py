@@ -17,7 +17,7 @@ class Tarefa(Base):
 
     status = Column(String(50), default="Pendente")
 
-    prioridade = Column(String(20), default="Média")
+    prioridade = Column(String(20), default="Media")
 
     data_criacao = Column(DateTime(timezone=True), server_default=func.now())
 

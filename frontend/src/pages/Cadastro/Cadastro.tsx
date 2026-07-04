@@ -62,8 +62,7 @@ export default function Cadastro() {
 
                     <Typography
                         variant="h4"
-                        fontWeight="bold"
-                        textAlign="center"
+                        sx={{ fontWeight: "bold", textAlign: "center" }}
                     >
                         Criar Conta
                     </Typography>

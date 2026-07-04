@@ -7,7 +7,7 @@ from typing import Literal
 class TarefaBase(BaseModel):
     titulo: str
     descricao: Optional[str] = None
-    prioridade: str = "Média"
+    prioridade: str = "Media"
 
 
 class TarefaCreate(BaseModel):

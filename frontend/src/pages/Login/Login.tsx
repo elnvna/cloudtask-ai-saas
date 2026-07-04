@@ -1,23 +1,34 @@
 import { useState, useContext } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
 import {
     Typography,
     TextField,
     Button,
     Stack,
-    
+    IconButton,
+    InputAdornment,
 } from "@mui/material";
+
+import {
+    Visibility,
+    VisibilityOff,
+} from "@mui/icons-material";
 
 import { Container, Card } from "./Login.styles";
 import { AuthContext } from "../../contexts/AuthContext";
-import { Link } from "react-router-dom";
 
 export default function Login() {
 
     const { login } = useContext(AuthContext);
 
+    const navigate = useNavigate();
+
     const [email, setEmail] = useState("");
+
     const [password, setPassword] = useState("");
+
+    const [mostrarSenha, setMostrarSenha] = useState(false);
 
     async function handleLogin() {
 
@@ -25,11 +36,11 @@ export default function Login() {
 
             await login(email, password);
 
-            alert("Login realizado!");
+            navigate("/dashboard");
 
         } catch {
 
-            alert("Usuário ou senha inválidos");
+            alert("Usuário ou senha inválidos.");
 
         }
 
@@ -45,21 +56,20 @@ export default function Login() {
 
                     <Typography
                         variant="h3"
-                        textAlign="center"
-                        fontWeight="bold"
+                        sx={{ textAlign: "center", fontWeight: "bold" }}
                     >
                         CloudTask AI
                     </Typography>
 
                     <Typography
                         variant="h6"
-                        textAlign="center"
+                        sx={{ textAlign: "center" }}
                     >
                         Bem-vindo de volta 👋
                     </Typography>
 
                     <TextField
-                        label="Email"
+                        label="E-mail"
                         fullWidth
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -67,10 +77,28 @@ export default function Login() {
 
                     <TextField
                         label="Senha"
-                        type="password"
+                        type={mostrarSenha ? "text" : "password"}
                         fullWidth
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        slotProps={{
+                            input: {
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            onClick={() => setMostrarSenha(!mostrarSenha)}
+                                            edge="end"
+                                        >
+                                            {mostrarSenha ? (
+                                                <VisibilityOff />
+                                            ) : (
+                                                <Visibility />
+                                            )}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            },
+                        }}
                     />
 
                     <Button
@@ -81,14 +109,18 @@ export default function Login() {
                         Entrar
                     </Button>
 
-                    <Typography textAlign="center">
-                        Ainda não possui conta?
+                    <Typography 
+                        sx={{ textAlign: "center" }}
+                    >
+
+                        Ainda não possui uma conta?{" "}
 
                         <Link to="/cadastro">
                             Cadastre-se
                         </Link>
 
                     </Typography>
+
                 </Stack>
 
             </Card>
@@ -96,4 +128,5 @@ export default function Login() {
         </Container>
 
     );
+
 }

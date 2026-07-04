@@ -5,6 +5,7 @@ import Login from "../pages/Login/Login";
 import Cadastro from "../pages/Cadastro/Cadastro";
 
 import Dashboard from "../pages/Dashboard/Dashboard";
+import Tarefas from "../pages/Tarefas/Tarefas";
 
 export default function AppRoutes(){
 
@@ -19,6 +20,8 @@ export default function AppRoutes(){
                 <Route path="/cadastro" element={<Cadastro />} />
 
                 <Route path="/dashboard" element={<Dashboard />} />
+
+                <Route path="/tarefas" element={<Tarefas />} />
 
             </Routes>
 

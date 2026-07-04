@@ -91,7 +91,7 @@ def atualizar_usuario(
         usuario.email = dados.email
 
     if dados.senha is not None:
-        usuario.senha = dados.senha
+        usuario.senha = gerar_hash(dados.senha)
 
     db.commit()
     db.refresh(usuario)
