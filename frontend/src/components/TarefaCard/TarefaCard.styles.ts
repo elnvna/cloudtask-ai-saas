@@ -1,13 +1,28 @@
-import { styled } from "@mui/material/styles";
 import { Card } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
-export const StyledCard = styled(Card)(({ theme }) => ({
-    borderRadius: 16,
-    padding: theme.spacing(2),
-    transition: "0.2s",
+export const StyledCard = styled(Card)(() => ({
+
+    height: 360,
+
+    padding: 20,
+
+    borderRadius: 18,
+
+    display: "flex",
+
+    flexDirection: "column",
+
+    transition: ".25s",
+
+    boxShadow: "0 5px 15px rgba(0,0,0,.08)",
 
     "&:hover": {
-        transform: "translateY(-3px)",
-        boxShadow: theme.shadows[6],
-    },
+
+        transform: "translateY(-5px)",
+
+        boxShadow: "0 12px 28px rgba(0,0,0,.15)"
+
+    }
+
 }));

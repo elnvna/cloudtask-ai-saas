@@ -7,8 +7,6 @@ import {
 
 import type { AuthContextType, User } from "../types/auth";
 
-import { login as loginService } from "../services/authService";
-
 import { api } from "../api/api";
 
 export const AuthContext = createContext({} as AuthContextType);

@@ -2,18 +2,31 @@ import { useEffect, useState } from "react";
 
 import {
     Typography,
-    Button
+    Button,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    TextField,
+    MenuItem,
+    Grid,
+    Paper,
+    Box
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
 
 import MainLayout from "../../layouts/MainLayout";
 
-import { listarTarefas } from "../../services/tarefaService";
-
-import type { Tarefa } from "../../types/tarefa";
+import {
+    listarTarefas,
+    excluirTarefa,
+    atualizarTarefa
+} from "../../services/tarefaService";
 
 import TarefaCard from "../../components/TarefaCard/TarefaCard";
+
+import ModalTarefa from "./ModalTarefa";
 
 import {
     Container,
@@ -21,15 +34,42 @@ import {
     CardsContainer
 } from "./Tarefas.styles";
 
+import type {
+    Tarefa,
+    StatusTarefa
+} from "../../types/tarefa";
+
 export default function Tarefas() {
 
     const [tarefas, setTarefas] = useState<Tarefa[]>([]);
 
+    const [abrirModal, setAbrirModal] = useState(false);
+
+    const [tarefaSelecionada, setTarefaSelecionada] =
+        useState<Tarefa | null>(null);
+
+    const [tarefaExcluir, setTarefaExcluir] =
+        useState<Tarefa | null>(null);
+
+    const [pesquisa, setPesquisa] = useState("");
+
+    const [statusFiltro, setStatusFiltro] = useState("Todas");
+
+    const [prioridadeFiltro, setPrioridadeFiltro] = useState("Todas");
+
     async function carregar() {
 
-        const dados = await listarTarefas();
+        try {
 
-        setTarefas(dados);
+            const dados = await listarTarefas();
+
+            setTarefas(dados);
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
 
     }
 
@@ -38,6 +78,82 @@ export default function Tarefas() {
         carregar();
 
     }, []);
+
+    async function excluir() {
+
+        if (!tarefaExcluir) return;
+
+        await excluirTarefa(tarefaExcluir.id);
+
+        setTarefaExcluir(null);
+
+        carregar();
+
+    }
+
+    async function alterarStatus(
+
+        tarefa: Tarefa,
+
+        status: StatusTarefa
+
+    ) {
+
+        await atualizarTarefa(
+
+            tarefa.id,
+
+            {
+
+                titulo: tarefa.titulo,
+
+                descricao: tarefa.descricao,
+
+                prioridade: tarefa.prioridade,
+
+                status
+
+            }
+
+        );
+
+        carregar();
+
+    }
+
+    const tarefasFiltradas = tarefas.filter((tarefa) => {
+
+    const pesquisaOk = tarefa.titulo
+        .toLowerCase()
+        .includes(pesquisa.toLowerCase());
+
+    const statusOk =
+        statusFiltro === "Todas"
+            ? true
+            : tarefa.status === statusFiltro;
+
+    const prioridadeOk =
+        prioridadeFiltro === "Todas"
+            ? true
+            : tarefa.prioridade === prioridadeFiltro;
+
+    return pesquisaOk && statusOk && prioridadeOk;
+
+});
+
+    const total = tarefas.length;
+
+    const pendentes = tarefas.filter(
+        t => t.status === "Pendente"
+    ).length;
+
+    const andamento = tarefas.filter(
+        t => t.status === "Em andamento"
+    ).length;
+
+    const concluidas = tarefas.filter(
+        t => t.status === "Concluida"
+    ).length;
 
     return (
 
@@ -49,14 +165,10 @@ export default function Tarefas() {
 
                     <div>
 
-                        {/* <Typography
-                            variant="h4"
-                            sx={{ fontWeight: "bold" }}
+                        <Typography 
+                            variant="h5"
+                            sx={{ color: "#0F172A", fontWeight: "bold" }}
                         >
-                            Tarefas
-                        </Typography> */}
-
-                        <Typography color="text.secondary">
 
                             Gerencie todas as suas tarefas
 
@@ -65,31 +177,285 @@ export default function Tarefas() {
                     </div>
 
                     <Button
+
                         variant="contained"
+
                         startIcon={<AddIcon />}
+
+                        onClick={() => {
+
+                            setTarefaSelecionada(null);
+
+                            setAbrirModal(true);
+
+                        }}
+
                     >
 
                         Nova tarefa
 
                     </Button>
 
+                    <Box
+                        sx={{
+                            display: "flex",
+                            gap: 2,
+                            mb: 4,
+                            flexWrap: "wrap"
+                        }}
+                    >
+                        <Paper
+                            sx={{
+                                width: 180,
+                                height: 120,
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                borderRadius: 3,
+                                boxShadow: 2,
+                                flexShrink: 0
+                            }}
+                        >
+                            <Typography variant="h4">
+                                {total}
+                            </Typography>
+
+                            <Typography
+                                sx={{
+                                    whiteSpace: "nowrap",
+                                    fontWeight: 500
+                                }}
+                            >
+                                Todas
+                            </Typography>
+                        </Paper>
+
+                        <Paper
+                            sx={{
+                                width: 180,
+                                height: 120,
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                borderRadius: 3,
+                                boxShadow: 2,
+                                flexShrink: 0
+                            }}
+                        >
+                            <Typography
+                                variant="h4"
+                                color="warning.main"
+                            >
+                                {pendentes}
+                            </Typography>
+
+                            <Typography
+                                sx={{
+                                    whiteSpace: "nowrap",
+                                    fontWeight: 500
+                                }}
+                            >
+                                Pendentes
+                            </Typography>
+                        </Paper>
+
+                        <Paper
+                            sx={{
+                                width: 180,
+                                height: 120,
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                borderRadius: 3,
+                                boxShadow: 2,
+                                flexShrink: 0
+                            }}
+                        >
+                            <Typography
+                                variant="h4"
+                                color="info.main"
+                            >
+                                {andamento}
+                            </Typography>
+
+                            <Typography
+                                sx={{
+                                    whiteSpace: "nowrap",
+                                    fontWeight: 500,
+                                    fontSize: 15
+                                }}
+                            >
+                                Em andamento
+                            </Typography>
+                        </Paper>
+
+                        <Paper
+                            sx={{
+                                width: 180,
+                                height: 120,
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                borderRadius: 3,
+                                boxShadow: 2,
+                                flexShrink: 0
+                            }}
+                        >
+                            <Typography
+                                variant="h4"
+                                color="success.main"
+                            >
+                                {concluidas}
+                            </Typography>
+
+                            <Typography
+                                sx={{
+                                    whiteSpace: "nowrap",
+                                    fontWeight: 500
+                                }}
+                            >
+                                Concluídas
+                            </Typography>
+                        </Paper>
+                    </Box>
+
                 </Header>
+
+                <TextField
+
+                    fullWidth
+
+                    placeholder="Pesquisar tarefas..."
+
+                    sx={{ mb: 3 }}
+
+                    value={pesquisa}
+
+                    onChange={(e) =>
+
+                        setPesquisa(e.target.value)
+
+                    }
+
+                />
 
                 <CardsContainer>
 
-                    {tarefas.map((tarefa) => (
+                    {tarefasFiltradas.length === 0 ? (
 
-                        <TarefaCard
+                        <Typography>
 
-                            key={tarefa.id}
+                            Nenhuma tarefa encontrada.
 
-                            tarefa={tarefa}
+                        </Typography>
 
-                        />
+                    ) : (
 
-                    ))}
+                        tarefasFiltradas.map((tarefa) => (
+
+                            <TarefaCard
+
+                                key={tarefa.id}
+
+                                tarefa={tarefa}
+
+                                onEditar={(tarefa) => {
+
+                                    setTarefaSelecionada(tarefa);
+
+                                    setAbrirModal(true);
+
+                                }}
+
+                                onExcluir={(tarefa) =>
+
+                                    setTarefaExcluir(tarefa)
+
+                                }
+
+                                onStatusChange={alterarStatus}
+
+                            />
+
+                        ))
+
+                    )}
 
                 </CardsContainer>
+
+                <ModalTarefa
+
+                    open={abrirModal}
+
+                    onClose={() => setAbrirModal(false)}
+
+                    atualizarLista={carregar}
+
+                    tarefa={tarefaSelecionada}
+
+                />
+
+                <Dialog
+
+                    open={!!tarefaExcluir}
+
+                    onClose={() =>
+
+                        setTarefaExcluir(null)
+
+                    }
+
+                >
+
+                    <DialogTitle>
+
+                        Excluir tarefa
+
+                    </DialogTitle>
+
+                    <DialogContent>
+
+                        Tem certeza que deseja excluir esta tarefa?
+
+                    </DialogContent>
+
+                    <DialogActions>
+
+                        <Button
+
+                            onClick={() =>
+
+                                setTarefaExcluir(null)
+
+                            }
+
+                        >
+
+                            Cancelar
+
+                        </Button>
+
+                        <Button
+
+                            color="error"
+
+                            variant="contained"
+
+                            onClick={excluir}
+
+                        >
+
+                            Excluir
+
+                        </Button>
+
+                    </DialogActions>
+
+                </Dialog>
 
             </Container>
 
