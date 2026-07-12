@@ -1,58 +1,129 @@
-import { Grid } from "@mui/material";
+import {
+
+    Grid,
+
+    Typography,
+
+    Box
+
+} from "@mui/material";
 
 import MainLayout from "../../layouts/MainLayout";
-import StatCard from "../../components/StatCard/StatCard";
+
+import CircleStatCard from "../../components/CircleStatCard/CircleStatCard";
+
 import { useDashboard } from "../../hooks/useDashboard";
 
-export default function Dashboard(){
+export default function Dashboard() {
 
-    const { total, pendentes, emAndamento, concluidas, produtividade } = useDashboard();
+    const {
 
-    return(
+        total,
+
+        pendentes,
+
+        emAndamento,
+
+        concluidas,
+
+        produtividade
+
+    } = useDashboard();
+
+    return (
 
         <MainLayout>
 
-            <Grid
-                container
-                spacing={3}
+            <Box
+
+                sx={{
+
+                    mb: 5
+
+                }}
+
             >
 
-                <Grid size={{ xs: 12, md: 6, lg: 2.4 }}>
-                    <StatCard
-                        titulo="Total de Tarefas"
-                        valor={total}
-                    />
-                </Grid>
+                <Typography
+                    variant="h5"
+                    sx={{
+                        mb: 5,
+                        textAlign: "center",
+                        color: "#48658D",
+                        fontWeight: 500
+                    }}
+                >
+                    Acompanhe o desempenho das suas tarefas
+                </Typography>
 
-                <Grid size={{ xs: 12, md: 6, lg: 2.4 }}>
-                    <StatCard
+                <Grid
+                    container
+                    sx={{
+                        gap: "10px",
+                        mb: 4,
+                        justifyContent: "center"
+                    }}
+                >
+
+                <Grid>
+                    <CircleStatCard
                         titulo="Pendentes"
                         valor={pendentes}
+                        porcentagem={total ? (pendentes / total) * 100 : 0}
+                        cor="#FF9800"
                     />
                 </Grid>
 
-                <Grid size={{ xs: 12, md: 6, lg: 2.4 }}>
-                    <StatCard
+                <Grid>
+                    <CircleStatCard
                         titulo="Em andamento"
                         valor={emAndamento}
+                        porcentagem={total ? (emAndamento / total) * 100 : 0}
+                        cor="#7C4DFF"
                     />
                 </Grid>
 
-                <Grid size={{ xs: 12, md: 6, lg: 2.4 }}>
-                    <StatCard
+                <Grid>
+                    <CircleStatCard
                         titulo="Concluídas"
                         valor={concluidas}
-                    />
-                </Grid>
-
-                <Grid size={{ xs: 12, md: 6, lg: 2.4 }}>
-                    <StatCard
-                        titulo="Produtividade"
-                        valor={`${produtividade}%`}
+                        porcentagem={total ? (concluidas / total) * 100 : 0}
+                        cor="#22C55E"
                     />
                 </Grid>
 
             </Grid>
+
+            <Grid
+                    container
+                    sx={{
+                        gap: "10px",
+                        mb: 4,
+                        justifyContent: "center"
+                    }}
+                >
+
+                <Grid>
+                    <CircleStatCard
+                        titulo="Total"
+                        valor={total}
+                        porcentagem={100}
+                        cor="#2563EB"
+                    />
+                </Grid>
+
+                <Grid>
+                    <CircleStatCard
+                        titulo="Produtividade"
+                        valor={`${produtividade}%`}
+                        porcentagem={produtividade}
+                        cor="#06B6D4"
+                    />
+                </Grid>
+
+            </Grid>
+
+            </Box>
 
         </MainLayout>
 

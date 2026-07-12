@@ -6,6 +6,8 @@ from app.database.connection import get_db
 from app.models.usuario import Usuario
 from app.auth.password import verificar_senha
 from app.auth.jwt import criar_token
+from app.schemas.recuperacao import RecuperacaoSenha
+from app.auth.jwt import criar_token_recuperacao
 
 router = APIRouter(
     prefix="/auth",
@@ -45,4 +47,27 @@ def login(
     return {
         "access_token": token,
         "token_type": "bearer"
+    }
+
+@router.post("/esqueci-senha")
+def esqueci_senha(
+    dados: RecuperacaoSenha,
+    db: Session = Depends(get_db)
+):
+
+    usuario = db.query(Usuario).filter(
+        Usuario.email == dados.email
+    ).first()
+
+    if not usuario:
+        raise HTTPException(
+            status_code=404,
+            detail="E-mail não encontrado."
+        )
+
+    token = criar_token_recuperacao(usuario.email)
+
+    return {
+        "mensagem": "Link de recuperação gerado.",
+        "token": token
     }

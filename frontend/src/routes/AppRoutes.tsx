@@ -6,6 +6,9 @@ import Cadastro from "../pages/Cadastro/Cadastro";
 
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Tarefas from "../pages/Tarefas/Tarefas";
+import Perfil from "../pages/Perfil/Perfil";
+import Configuracoes from "../pages/Configuracoes/Configuracoes";
+import EsqueciSenha from "../pages/EsqueciSenha/EsqueciSenha";
 
 export default function AppRoutes(){
 
@@ -22,6 +25,12 @@ export default function AppRoutes(){
                 <Route path="/dashboard" element={<Dashboard />} />
 
                 <Route path="/tarefas" element={<Tarefas />} />
+                
+                <Route path="/perfil" element={<Perfil />} />
+
+                <Route path="/configuracoes" element={<Configuracoes />} />
+
+                <Route path="/esqueci-senha" element={<EsqueciSenha />} />
 
             </Routes>
 

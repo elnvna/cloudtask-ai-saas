@@ -10,6 +10,7 @@ import {
 
 import { Container, Card } from "./Cadastro.styles";
 import { criarUsuario } from "../../services/usuarioService";
+import AppSnackbar from "../../components/AppSnackbar/AppSnackbar";
 
 export default function Cadastro() {
 
@@ -19,12 +20,36 @@ export default function Cadastro() {
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
     const [confirmarSenha, setConfirmarSenha] = useState("");
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+    const [snackbarMessage, setSnackbarMessage] = useState("");
+
+    const [snackbarSeverity, setSnackbarSeverity] = useState<
+        "success" | "error" | "warning" | "info"
+    >("success");
+
+    function mostrarMensagem(
+
+        mensagem: string,
+
+        tipo: "success" | "error" | "warning" | "info"
+
+    ) {
+
+        setSnackbarMessage(mensagem);
+
+        setSnackbarSeverity(tipo);
+
+        setSnackbarOpen(true);
+
+    }
 
     async function handleCadastro() {
 
         if (senha !== confirmarSenha) {
 
-            alert("As senhas não coincidem.");
+            mostrarMensagem(
+                "As senhas não coincidem.", "error");
 
             return;
         }
@@ -37,15 +62,17 @@ export default function Cadastro() {
                 senha,
             });
 
-            alert("Conta criada com sucesso!");
+            mostrarMensagem(
+                "Conta criada com sucesso!", "success");
 
             navigate("/");
 
         } catch (erro: any) {
 
-            alert(
+            mostrarMensagem(
                 erro?.response?.data?.detail ??
-                "Erro ao cadastrar usuário."
+                "Erro ao cadastrar usuário.",   
+                "error"
             );
 
         }
@@ -103,8 +130,20 @@ export default function Cadastro() {
                 </Stack>
 
             </Card>
+            <AppSnackbar
+            
+                            open={snackbarOpen}
+            
+                            message={snackbarMessage}
+            
+                            severity={snackbarSeverity}
+            
+                            onClose={() => setSnackbarOpen(false)}
+            
+                        />
 
         </Container>
+        
 
     );
 

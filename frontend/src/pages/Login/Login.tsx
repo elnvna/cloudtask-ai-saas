@@ -17,6 +17,7 @@ import {
 
 import { Container, Card } from "./Login.styles";
 import { AuthContext } from "../../contexts/AuthContext";
+import AppSnackbar from "../../components/AppSnackbar/AppSnackbar";
 
 export default function Login() {
 
@@ -30,6 +31,30 @@ export default function Login() {
 
     const [mostrarSenha, setMostrarSenha] = useState(false);
 
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+    const [snackbarMessage, setSnackbarMessage] = useState("");
+
+    const [snackbarSeverity, setSnackbarSeverity] = useState<
+        "success" | "error" | "warning" | "info"
+    >("success");
+
+    function mostrarMensagem(
+
+        mensagem: string,
+
+        tipo: "success" | "error" | "warning" | "info"
+
+    ) {
+
+        setSnackbarMessage(mensagem);
+
+        setSnackbarSeverity(tipo);
+
+        setSnackbarOpen(true);
+
+    }
+
     async function handleLogin() {
 
         try {
@@ -40,7 +65,8 @@ export default function Login() {
 
         } catch {
 
-            alert("Usuário ou senha inválidos.");
+            mostrarMensagem(
+                "Usuário ou senha inválidos.", "error");
 
         }
 
@@ -121,10 +147,34 @@ export default function Login() {
 
                     </Typography>
 
+                    <Typography
+                        align="right"
+                        sx={{
+                            mt:1
+                        }}
+                    >
+                        Esqueceu sua senha?{" "}
+
+                        <Link to="/esqueci-senha">
+                            Clique aqui
+                        </Link>
+
+                    </Typography>
+
                 </Stack>
 
             </Card>
-
+            <AppSnackbar
+            
+                            open={snackbarOpen}
+            
+                            message={snackbarMessage}
+            
+                            severity={snackbarSeverity}
+            
+                            onClose={() => setSnackbarOpen(false)}
+            
+                        />
         </Container>
 
     );

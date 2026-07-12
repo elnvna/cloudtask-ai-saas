@@ -1,8 +1,6 @@
 import {
     Dashboard,
     Assignment,
-    SmartToy,
-    CalendarMonth,
     Person,
     Settings,
     Logout,
@@ -34,16 +32,6 @@ export default function Sidebar() {
             text: "Tarefas",
             icon: <Assignment />,
             path: "/tarefas",
-        },
-        {
-            text: "IA",
-            icon: <SmartToy />,
-            path: "/ia",
-        },
-        {
-            text: "Calendário",
-            icon: <CalendarMonth />,
-            path: "/calendario",
         },
         {
             text: "Perfil",
@@ -152,6 +140,7 @@ export default function Sidebar() {
                         }}
                     >
                         <Logout />
+                        
                     </ListItemIcon>
 
                     <ListItemText primary="Sair" />

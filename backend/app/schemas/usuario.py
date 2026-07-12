@@ -21,3 +21,7 @@ class UsuarioResponse(UsuarioBase):
     id: int
 
     model_config = ConfigDict(from_attributes=True)
+
+class AlterarSenha(BaseModel):
+    senha_atual: str
+    nova_senha: str
