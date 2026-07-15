@@ -59,7 +59,7 @@ cloudtask-ai-saas/
 │   │   ├── models/          # Modelos SQLAlchemy
 │   │   ├── routes/          # Rotas da API
 │   │   ├── schemas/         # Schemas Pydantic
-│   │   └── uploads/         # Gerenciamento de uploads
+│   │   
 │   └── requirements.txt
 ├── k8s/                      # Manifestos Kubernetes
 ├── docker-compose.yml        # Composição local
@@ -136,12 +136,12 @@ A aplicação estará em `http://localhost:5173`
 
 ### Autenticação
 - `POST /auth/login` - Fazer login
-- `POST /auth/register` - Registrar novo usuário
+- `POST /usuarios/` - Registrar novo usuário
 
 ### Usuários
-- `GET /usuarios/perfil` - Obter perfil do usuário
-- `PUT /usuarios/perfil` - Atualizar perfil
-- `POST /usuarios/alterar-senha` - Alterar senha
+- `GET /usuarios/me` - Obter perfil do usuário
+- `PUT /usuarios/me` - Atualizar perfil
+- `POST /usuarios/me/senha` - Alterar senha
 
 ### Tarefas
 - `GET /tarefas` - Listar tarefas
@@ -160,6 +160,10 @@ A aplicação estará em `http://localhost:5173`
 **PostgreSQL:**
 - Usuário: `postgres`
 - Senha: `post1425`
+
+**Usuário Teste:**
+- Usuário: `Admin`
+- Senha: `admin1`
 
 ## 🎨 Features Recentes
 
@@ -226,7 +230,7 @@ kubectl port-forward svc/cloudtask-service 8000:8000 -n cloudtask
 
 ## 🔒 Segurança
 
-- ✅ Autenticação JWT com refresh tokens
+- ✅ Autenticação JWT Bearer Token
 - ✅ Senhas criptografadas com bcrypt
 - ✅ CORS configurado
 - ✅ Validação de entrada com Pydantic
