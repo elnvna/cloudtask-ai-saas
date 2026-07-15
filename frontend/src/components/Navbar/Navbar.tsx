@@ -83,7 +83,7 @@ export default function Navbar() {
                     sx={{
                         flexGrow: 1,
                         fontWeight: "bold",
-                        color: theme.palette.mode === "dark" ? "#F1F5F9" : "#64748B"
+                        color: theme.palette.mode === "dark" ? "#ffffff" : "#000000"
                     }}
                 >
 

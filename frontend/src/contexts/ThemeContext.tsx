@@ -42,12 +42,12 @@ export function ThemeContextProvider({ children }: Props) {
         main: "#0EA5E9",
       },
       background: {
-        default: darkMode ? "#0F172A" : "#F8FAFC",
-        paper: darkMode ? "#1E293B" : "#FFFFFF",
+        default: darkMode ? "#454e65" : "#F8FAFC",
+        paper: darkMode ? "#000000" : "#FFFFFF",
       },
       text: {
-        primary: darkMode ? "#F1F5F9" : "#1E293B",
-        secondary: darkMode ? "#CBD5E1" : "#64748B",
+        primary: darkMode ? "#F1F5F9" : "#121a28",
+        secondary: darkMode ? "#d7d7d7" : "#4e6381",
       },
     },
     typography: {
