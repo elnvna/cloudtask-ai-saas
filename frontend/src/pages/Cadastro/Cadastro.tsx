@@ -10,49 +10,36 @@ import {
 
 import { Container, Card } from "./Cadastro.styles";
 import { criarUsuario } from "../../services/usuarioService";
-import AppSnackbar from "../../components/AppSnackbar/AppSnackbar";
+import { useNotification } from "../../hooks/useNotification";
 
 export default function Cadastro() {
 
     const navigate = useNavigate();
 
+    const { showNotification } = useNotification();
+
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
     const [confirmarSenha, setConfirmarSenha] = useState("");
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-
-    const [snackbarMessage, setSnackbarMessage] = useState("");
-
-    const [snackbarSeverity, setSnackbarSeverity] = useState<
-        "success" | "error" | "warning" | "info"
-    >("success");
-
-    function mostrarMensagem(
-
-        mensagem: string,
-
-        tipo: "success" | "error" | "warning" | "info"
-
-    ) {
-
-        setSnackbarMessage(mensagem);
-
-        setSnackbarSeverity(tipo);
-
-        setSnackbarOpen(true);
-
-    }
+    const [loading, setLoading] = useState(false);
 
     async function handleCadastro() {
 
+        if (!nome || !email || !senha || !confirmarSenha) {
+            showNotification("Preencha todos os campos", "warning");
+            return;
+        }
+
         if (senha !== confirmarSenha) {
 
-            mostrarMensagem(
+            showNotification(
                 "As senhas não coincidem.", "error");
 
             return;
         }
+
+        setLoading(true);
 
         try {
 
@@ -62,19 +49,21 @@ export default function Cadastro() {
                 senha,
             });
 
-            mostrarMensagem(
+            showNotification(
                 "Conta criada com sucesso!", "success");
 
             navigate("/");
 
         } catch (erro: any) {
 
-            mostrarMensagem(
+            showNotification(
                 erro?.response?.data?.detail ??
                 "Erro ao cadastrar usuário.",   
                 "error"
             );
 
+        } finally {
+            setLoading(false);
         }
 
     }
@@ -123,24 +112,14 @@ export default function Cadastro() {
                     <Button
                         variant="contained"
                         onClick={handleCadastro}
+                        disabled={loading}
                     >
-                        Criar Conta
+                        {loading ? 'Criando conta...' : 'Criar Conta'}
                     </Button>
 
                 </Stack>
 
             </Card>
-            <AppSnackbar
-            
-                            open={snackbarOpen}
-            
-                            message={snackbarMessage}
-            
-                            severity={snackbarSeverity}
-            
-                            onClose={() => setSnackbarOpen(false)}
-            
-                        />
 
         </Container>
         

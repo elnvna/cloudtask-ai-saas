@@ -5,7 +5,7 @@ import {
 } from "@mui/material";
 
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import {
     Container,
@@ -13,48 +13,36 @@ import {
 } from "./EsqueciSenha.styles";
 
 import { recuperarSenha } from "../../services/authService";
-import AppSnackbar from "../../components/AppSnackbar/AppSnackbar";
+import { useNotification } from "../../hooks/useNotification";
 
 export default function EsqueciSenha() {
 
     const [email, setEmail] = useState("");
     const navigate = useNavigate();
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-
-    const [snackbarMessage, setSnackbarMessage] = useState("");
-
-    const [snackbarSeverity, setSnackbarSeverity] = useState<
-        "success" | "error" | "warning" | "info"
-    >("success");
-
-    function mostrarMensagem(
-
-        mensagem: string,
-
-        tipo: "success" | "error" | "warning" | "info"
-
-    ) {
-
-        setSnackbarMessage(mensagem);
-
-        setSnackbarSeverity(tipo);
-
-        setSnackbarOpen(true);
-
-    }
+    const { showNotification } = useNotification();
+    const [loading, setLoading] = useState(false);
 
     async function enviarEmail() {
+
+        if (!email) {
+            showNotification("Informe seu e-mail", "warning");
+            return;
+        }
+
+        setLoading(true);
 
         try {
 
             await recuperarSenha(email);
 
-            mostrarMensagem("Se existir uma conta para este e-mail, um link de recuperação foi enviado.", "success");
+            showNotification("Se existir uma conta para este e-mail, um link de recuperação foi enviado.", "success");
 
         } catch {
 
-            mostrarMensagem("Erro ao solicitar recuperação.", "error");
+            showNotification("Erro ao solicitar recuperação.", "error");
 
+        } finally {
+            setLoading(false);
         }
 
     }
@@ -90,8 +78,9 @@ export default function EsqueciSenha() {
                     variant="contained"
                     size="large"
                     onClick={enviarEmail}
+                    disabled={loading}
                 >
-                    Enviar link
+                    {loading ? 'Enviando...' : 'Enviar link'}
                 </Button>
 
                 <Button
@@ -102,18 +91,6 @@ export default function EsqueciSenha() {
                 </Button>
 
             </Card>
-
-            <AppSnackbar
-            
-                            open={snackbarOpen}
-            
-                            message={snackbarMessage}
-            
-                            severity={snackbarSeverity}
-            
-                            onClose={() => setSnackbarOpen(false)}
-            
-                        />
 
         </Container>
 

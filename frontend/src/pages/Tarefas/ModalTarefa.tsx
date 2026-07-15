@@ -14,7 +14,15 @@ import {
 
     TextField,
 
-    MenuItem
+    MenuItem,
+
+    Tabs,
+
+    Tab,
+
+    Box,
+
+    Typography
 
 } from "@mui/material";
 
@@ -25,6 +33,8 @@ import {
     atualizarTarefa
 
 } from "../../services/tarefaService";
+
+import { useNotification } from "../../hooks/useNotification";
 
 import type { Tarefa } from "../../types/tarefa";
 
@@ -58,6 +68,12 @@ export default function ModalTarefa({
 
     const[prioridade,setPrioridade]=useState<"Baixa"|"Media"|"Alta">("Media");
 
+    const[loading,setLoading]=useState(false);
+
+    const[tabAtiva,setTabAtiva]=useState(0);
+
+    const { showNotification } = useNotification();
+
     useEffect(()=>{
 
         if(tarefa){
@@ -82,13 +98,41 @@ export default function ModalTarefa({
 
     async function salvar(){
 
-        if(tarefa){
+        if(!titulo || !descricao){
 
-            await atualizarTarefa(
+            showNotification("Preencha todos os campos", "warning");
 
-                tarefa.id,
+            return;
 
-                {
+        }
+
+        setLoading(true);
+
+        try {
+
+            if(tarefa){
+
+                await atualizarTarefa(
+
+                    tarefa.id,
+
+                    {
+
+                        titulo,
+
+                        descricao,
+
+                        prioridade
+
+                    }
+
+                );
+
+                showNotification("Tarefa atualizada com sucesso!", "success");
+
+            }else{
+
+                await criarTarefa({
 
                     titulo,
 
@@ -96,27 +140,25 @@ export default function ModalTarefa({
 
                     prioridade
 
-                }
+                });
 
-            );
+                showNotification("Tarefa criada com sucesso!", "success");
 
-        }else{
+            }
 
-            await criarTarefa({
+            atualizarLista();
 
-                titulo,
+            onClose();
 
-                descricao,
+        } catch (error) {
 
-                prioridade
+            showNotification("Erro ao salvar tarefa", "error");
 
-            });
+        } finally {
+
+            setLoading(false);
 
         }
-
-        atualizarLista();
-
-        onClose();
 
     }
 
@@ -140,83 +182,141 @@ export default function ModalTarefa({
 
             </DialogTitle>
 
-            <DialogContent>
+            {tarefa && (
 
-                <TextField
+                <Tabs
 
-                    margin="normal"
+                    value={tabAtiva}
 
-                    label="Título"
+                    onChange={(_, novaAba) => setTabAtiva(novaAba)}
 
-                    fullWidth
-
-                    value={titulo}
-
-                    onChange={(e)=>setTitulo(e.target.value)}
-
-                />
-
-                <TextField
-
-                    margin="normal"
-
-                    label="Descrição"
-
-                    multiline
-
-                    rows={4}
-
-                    fullWidth
-
-                    value={descricao}
-
-                    onChange={(e)=>setDescricao(e.target.value)}
-
-                />
-
-                <TextField
-
-                    margin="normal"
-
-                    select
-
-                    fullWidth
-
-                    label="Prioridade"
-
-                    value={prioridade}
-
-                    onChange={(e)=>
-
-                        setPrioridade(
-
-                            e.target.value as "Baixa"|"Media"|"Alta"
-
-                        )
-
-                    }
+                    sx={{ borderBottom: 1, borderColor: "divider" }}
 
                 >
 
-                    <MenuItem value="Baixa">
+                    <Tab label="Informações" />
 
-                        Baixa
+                    <Tab label="Arquivos" />
 
-                    </MenuItem>
+                </Tabs>
 
-                    <MenuItem value="Media">
+            )}
 
-                        Média
+            <DialogContent>
 
-                    </MenuItem>
+                {tabAtiva === 0 && (
 
-                    <MenuItem value="Alta">
+                    <Box>
 
-                        Alta
+                        <TextField
 
-                    </MenuItem>
+                            margin="normal"
 
-                </TextField>
+                            label="Título"
+
+                            fullWidth
+
+                            value={titulo}
+
+                            onChange={(e)=>setTitulo(e.target.value)}
+
+                        />
+
+                        <TextField
+
+                            margin="normal"
+
+                            label="Descrição"
+
+                            multiline
+
+                            rows={4}
+
+                            fullWidth
+
+                            value={descricao}
+
+                            onChange={(e)=>setDescricao(e.target.value)}
+
+                        />
+
+                        <TextField
+
+                            margin="normal"
+
+                            select
+
+                            fullWidth
+
+                            label="Prioridade"
+
+                            value={prioridade}
+
+                            onChange={(e)=>
+
+                                setPrioridade(
+
+                                    e.target.value as "Baixa"|"Media"|"Alta"
+
+                                )
+
+                            }
+
+                        >
+
+                            <MenuItem value="Baixa">
+
+                                Baixa
+
+                            </MenuItem>
+
+                            <MenuItem value="Media">
+
+                                Média
+
+                            </MenuItem>
+
+                            <MenuItem value="Alta">
+
+                                Alta
+
+                            </MenuItem>
+
+                        </TextField>
+
+                    </Box>
+
+                )}
+
+                {/* {tabAtiva === 1 && tarefa && (
+
+                    <Box sx={{ mt: 2 }}>
+
+                        <FileUpload 
+
+                            tarefaId={tarefa.id}
+
+                            onUploadSuccess={() => {
+
+                                // Opcional: fazer algo após upload
+
+                            }}
+
+                        />
+
+                    </Box>
+
+                )}
+
+                {tabAtiva === 1 && !tarefa && (
+
+                    <Typography sx={{ py: 4, textAlign: "center", color: "text.secondary" }}>
+
+                        Salve a tarefa primeiro para adicionar arquivos
+
+                    </Typography>
+
+                )} */}
 
             </DialogContent>
 
@@ -228,17 +328,23 @@ export default function ModalTarefa({
 
                 </Button>
 
-                <Button
+                {tabAtiva === 0 && (
 
-                    variant="contained"
+                    <Button
 
-                    onClick={salvar}
+                        variant="contained"
 
-                >
+                        onClick={salvar}
 
-                    {tarefa ? "Salvar" : "Criar"}
+                        disabled={loading}
 
-                </Button>
+                    >
+
+                        {loading ? (tarefa ? "Salvando..." : "Criando...") : (tarefa ? "Salvar" : "Criar")}
+
+                    </Button>
+
+                )}
 
             </DialogActions>
 

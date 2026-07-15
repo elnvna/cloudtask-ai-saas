@@ -5,6 +5,7 @@ import {
     Avatar,
     Box,
     IconButton,
+    useTheme,
 } from "@mui/material";
 
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -28,6 +29,8 @@ interface Usuario {
 export default function Navbar() {
 
     const location = useLocation();
+
+    const theme = useTheme();
 
     const [usuario, setUsuario] = useState<Usuario | null>(null);
 
@@ -80,7 +83,7 @@ export default function Navbar() {
                     sx={{
                         flexGrow: 1,
                         fontWeight: "bold",
-                        color: "#64748B"
+                        color: theme.palette.mode === "dark" ? "#F1F5F9" : "#64748B"
                     }}
                 >
 

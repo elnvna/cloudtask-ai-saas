@@ -24,9 +24,11 @@ import {
 
 } from "./Configuracoes.styles";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function Configuracoes() {
     const navigate = useNavigate();
+    const { darkMode, toggleTheme } = useTheme();
     
     return (
 
@@ -58,7 +60,7 @@ export default function Configuracoes() {
 
                         <FormControlLabel
 
-                            control={<Switch />}
+                            control={<Switch checked={darkMode} onChange={toggleTheme} />}
 
                             label="Tema escuro"
 

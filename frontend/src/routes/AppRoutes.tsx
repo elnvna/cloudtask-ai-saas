@@ -9,6 +9,7 @@ import Tarefas from "../pages/Tarefas/Tarefas";
 import Perfil from "../pages/Perfil/Perfil";
 import Configuracoes from "../pages/Configuracoes/Configuracoes";
 import EsqueciSenha from "../pages/EsqueciSenha/EsqueciSenha";
+import NotFound from "../pages/NotFound/NotFound";
 
 export default function AppRoutes(){
 
@@ -31,6 +32,8 @@ export default function AppRoutes(){
                 <Route path="/configuracoes" element={<Configuracoes />} />
 
                 <Route path="/esqueci-senha" element={<EsqueciSenha />} />
+
+                <Route path="/not-found" element={<NotFound />} />
 
             </Routes>
 

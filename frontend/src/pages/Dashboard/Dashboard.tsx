@@ -4,7 +4,9 @@ import {
 
     Typography,
 
-    Box
+    Box,
+
+    useTheme
 
 } from "@mui/material";
 
@@ -30,6 +32,8 @@ export default function Dashboard() {
 
     } = useDashboard();
 
+    const theme = useTheme();
+
     return (
 
         <MainLayout>
@@ -49,7 +53,7 @@ export default function Dashboard() {
                     sx={{
                         mb: 5,
                         textAlign: "center",
-                        color: "#48658D",
+                        color: theme.palette.mode === "dark" ? "#F1F5F9" : "#48658D",
                         fontWeight: 500
                     }}
                 >

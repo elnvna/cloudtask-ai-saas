@@ -17,7 +17,7 @@ import {
 
 import { Container, Card } from "./Login.styles";
 import { AuthContext } from "../../contexts/AuthContext";
-import AppSnackbar from "../../components/AppSnackbar/AppSnackbar";
+import { useNotification } from "../../hooks/useNotification";
 
 export default function Login() {
 
@@ -25,37 +25,24 @@ export default function Login() {
 
     const navigate = useNavigate();
 
+    const { showNotification } = useNotification();
+
     const [email, setEmail] = useState("");
 
     const [password, setPassword] = useState("");
 
     const [mostrarSenha, setMostrarSenha] = useState(false);
 
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-
-    const [snackbarMessage, setSnackbarMessage] = useState("");
-
-    const [snackbarSeverity, setSnackbarSeverity] = useState<
-        "success" | "error" | "warning" | "info"
-    >("success");
-
-    function mostrarMensagem(
-
-        mensagem: string,
-
-        tipo: "success" | "error" | "warning" | "info"
-
-    ) {
-
-        setSnackbarMessage(mensagem);
-
-        setSnackbarSeverity(tipo);
-
-        setSnackbarOpen(true);
-
-    }
+    const [loading, setLoading] = useState(false);
 
     async function handleLogin() {
+
+        if (!email || !password) {
+            showNotification("Preencha todos os campos", "warning");
+            return;
+        }
+
+        setLoading(true);
 
         try {
 
@@ -65,9 +52,11 @@ export default function Login() {
 
         } catch {
 
-            mostrarMensagem(
+            showNotification(
                 "Usuário ou senha inválidos.", "error");
 
+        } finally {
+            setLoading(false);
         }
 
     }
@@ -131,8 +120,12 @@ export default function Login() {
                         variant="contained"
                         size="large"
                         onClick={handleLogin}
+                        disabled={loading}
+                        sx={{
+                            position: 'relative',
+                        }}
                     >
-                        Entrar
+                        {loading ? 'Entrando...' : 'Entrar'}
                     </Button>
 
                     <Typography 
@@ -164,17 +157,6 @@ export default function Login() {
                 </Stack>
 
             </Card>
-            <AppSnackbar
-            
-                            open={snackbarOpen}
-            
-                            message={snackbarMessage}
-            
-                            severity={snackbarSeverity}
-            
-                            onClose={() => setSnackbarOpen(false)}
-            
-                        />
         </Container>
 
     );

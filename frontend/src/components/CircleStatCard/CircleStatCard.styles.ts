@@ -4,7 +4,7 @@ import {
     Box
 } from "@mui/material";
 
-export const StyledCard = styled(Card)(() => ({
+export const StyledCard = styled(Card)(({ theme }) => ({
 
     width: 210,
 
@@ -23,6 +23,8 @@ export const StyledCard = styled(Card)(() => ({
     overflow: "hidden",
 
     boxSizing: "border-box",
+
+    backgroundColor: theme.palette.mode === "dark" ? "#1E293B" : "#FFFFFF",
 
     boxShadow: "0 8px 25px rgba(0,0,0,.08)",
 

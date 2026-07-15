@@ -8,10 +8,9 @@ import {
     DialogContent,
     DialogActions,
     TextField,
-    MenuItem,
-    Grid,
     Paper,
-    Box
+    Box,
+    useTheme
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -27,6 +26,8 @@ import {
 import TarefaCard from "../../components/TarefaCard/TarefaCard";
 
 import ModalTarefa from "./ModalTarefa";
+
+import { useNotification } from "../../hooks/useNotification";
 
 import {
     Container,
@@ -53,9 +54,11 @@ export default function Tarefas() {
 
     const [pesquisa, setPesquisa] = useState("");
 
-    const [statusFiltro, setStatusFiltro] = useState("Todas");
+    const [loadingExcluir, setLoadingExcluir] = useState(false);
 
-    const [prioridadeFiltro, setPrioridadeFiltro] = useState("Todas");
+    const { showNotification } = useNotification();
+
+    const theme = useTheme();
 
     async function carregar() {
 
@@ -83,11 +86,27 @@ export default function Tarefas() {
 
         if (!tarefaExcluir) return;
 
-        await excluirTarefa(tarefaExcluir.id);
+        setLoadingExcluir(true);
 
-        setTarefaExcluir(null);
+        try {
 
-        carregar();
+            await excluirTarefa(tarefaExcluir.id);
+
+            showNotification("Tarefa excluída com sucesso!", "success");
+
+            setTarefaExcluir(null);
+
+            carregar();
+
+        } catch (error) {
+
+            showNotification("Erro ao excluir tarefa", "error");
+
+        } finally {
+
+            setLoadingExcluir(false);
+
+        }
 
     }
 
@@ -122,24 +141,12 @@ export default function Tarefas() {
     }
 
     const tarefasFiltradas = tarefas.filter((tarefa) => {
+        const pesquisaOk = tarefa.titulo
+            .toLowerCase()
+            .includes(pesquisa.toLowerCase());
 
-    const pesquisaOk = tarefa.titulo
-        .toLowerCase()
-        .includes(pesquisa.toLowerCase());
-
-    const statusOk =
-        statusFiltro === "Todas"
-            ? true
-            : tarefa.status === statusFiltro;
-
-    const prioridadeOk =
-        prioridadeFiltro === "Todas"
-            ? true
-            : tarefa.prioridade === prioridadeFiltro;
-
-    return pesquisaOk && statusOk && prioridadeOk;
-
-});
+        return pesquisaOk;
+    });
 
     const total = tarefas.length;
 
@@ -167,7 +174,7 @@ export default function Tarefas() {
 
                         <Typography 
                             variant="h5"
-                            sx={{ color: "#0F172A", fontWeight: "bold" }}
+                            sx={{ color: theme.palette.mode === "dark" ? "#F1F5F9" : "#0F172A", fontWeight: "bold" }}
                         >
 
                             Gerencie todas as suas tarefas
@@ -447,9 +454,11 @@ export default function Tarefas() {
 
                             onClick={excluir}
 
+                            disabled={loadingExcluir}
+
                         >
 
-                            Excluir
+                            {loadingExcluir ? 'Excluindo...' : 'Excluir'}
 
                         </Button>
 

@@ -1,6 +1,7 @@
 import {
     Typography,
-    CircularProgress
+    CircularProgress,
+    useTheme
 } from "@mui/material";
 
 import {
@@ -32,6 +33,8 @@ export default function CircleStatCard({
     cor
 
 }: Props) {
+
+    const theme = useTheme();
 
     return (
 
@@ -85,7 +88,9 @@ export default function CircleStatCard({
 
                         sx={{
 
-                            fontWeight: "bold"
+                            fontWeight: "bold",
+
+                            color: theme.palette.mode === "dark" ? "#FFFFFF" : "#1E293B"
 
                         }}
 
@@ -107,7 +112,7 @@ export default function CircleStatCard({
 
                     fontWeight: 700,
 
-                    color: "#334155"
+                    color: theme.palette.mode === "dark" ? "#F1F5F9" : "#334155"
 
                 }}
 

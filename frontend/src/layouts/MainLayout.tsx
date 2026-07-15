@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 
 import Sidebar from "../components/Sidebar/Sidebar";
 import Navbar from "../components/Navbar/Navbar";
@@ -10,6 +10,8 @@ interface Props{
 }
 
 export default function MainLayout({children}:Props){
+
+    const theme = useTheme();
 
     return(
 
@@ -27,7 +29,7 @@ export default function MainLayout({children}:Props){
                 sx={{
                     flex: 1,
                     minHeight: "100vh",
-                    backgroundColor: "#f5f5f5",
+                    backgroundColor: theme.palette.background.default,
                 }}
             >
 

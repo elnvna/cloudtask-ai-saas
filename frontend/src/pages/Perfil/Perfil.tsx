@@ -21,7 +21,7 @@ import {
     alterarSenha
 } from "../../services/usuarioService";
 
-import AppSnackbar from "../../components/AppSnackbar/AppSnackbar";
+import { useNotification } from "../../hooks/useNotification";
 
 export default function Perfil() {
 
@@ -35,35 +35,17 @@ export default function Perfil() {
 
     const [confirmarSenha, setConfirmarSenha] = useState("");
 
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [loadingSalvar, setLoadingSalvar] = useState(false);
 
-    const [snackbarMessage, setSnackbarMessage] = useState("");
+    const [loadingSenha, setLoadingSenha] = useState(false);
 
-    const [snackbarSeverity, setSnackbarSeverity] = useState<
-        "success" | "error" | "warning" | "info"
-    >("success");
+    const { showNotification } = useNotification();
 
     useEffect(() => {
 
         carregarPerfil();
 
     }, []);
-
-    function mostrarMensagem(
-
-        mensagem: string,
-
-        tipo: "success" | "error" | "warning" | "info"
-
-    ) {
-
-        setSnackbarMessage(mensagem);
-
-        setSnackbarSeverity(tipo);
-
-        setSnackbarOpen(true);
-
-    }
 
     async function carregarPerfil() {
 
@@ -85,6 +67,13 @@ export default function Perfil() {
 
     async function salvarPerfil() {
 
+        if (!nome || !email) {
+            showNotification("Preencha todos os campos.", "warning");
+            return;
+        }
+
+        setLoadingSalvar(true);
+
         try {
 
             await atualizarPerfil({
@@ -95,7 +84,7 @@ export default function Perfil() {
 
             });
 
-            mostrarMensagem(
+            showNotification(
 
                 "Perfil atualizado com sucesso!",
 
@@ -107,7 +96,7 @@ export default function Perfil() {
 
             console.error(error);
 
-            mostrarMensagem(
+            showNotification(
 
                 "Erro ao atualizar perfil.",
 
@@ -115,6 +104,8 @@ export default function Perfil() {
 
             );
 
+        } finally {
+            setLoadingSalvar(false);
         }
 
     }
@@ -123,7 +114,7 @@ export default function Perfil() {
 
         if (!senhaAtual || !novaSenha || !confirmarSenha) {
 
-            mostrarMensagem(
+            showNotification(
 
                 "Preencha todos os campos.",
 
@@ -137,7 +128,7 @@ export default function Perfil() {
 
         if (novaSenha !== confirmarSenha) {
 
-            mostrarMensagem(
+            showNotification(
 
                 "As senhas não conferem.",
 
@@ -149,6 +140,8 @@ export default function Perfil() {
 
         }
 
+        setLoadingSenha(true);
+
         try {
 
             await alterarSenha(
@@ -159,7 +152,7 @@ export default function Perfil() {
 
             );
 
-            mostrarMensagem(
+            showNotification(
 
                 "Senha alterada com sucesso!",
 
@@ -177,7 +170,7 @@ export default function Perfil() {
 
             console.error(err);
 
-            mostrarMensagem(
+            showNotification(
 
                 err.response?.data?.detail ||
 
@@ -187,6 +180,8 @@ export default function Perfil() {
 
             );
 
+        } finally {
+            setLoadingSenha(false);
         }
 
     }
@@ -262,9 +257,11 @@ export default function Perfil() {
 
                             onClick={salvarPerfil}
 
+                            disabled={loadingSalvar}
+
                         >
 
-                            Salvar alterações
+                            {loadingSalvar ? 'Salvando...' : 'Salvar alterações'}
 
                         </Button>
 
@@ -343,9 +340,11 @@ export default function Perfil() {
 
                             onClick={salvarSenha}
 
+                            disabled={loadingSenha}
+
                         >
 
-                            Alterar senha
+                            {loadingSenha ? 'Alterando...' : 'Alterar senha'}
 
                         </Button>
 
@@ -354,18 +353,6 @@ export default function Perfil() {
                 </CardPerfil>
 
             </Container>
-
-            <AppSnackbar
-
-                open={snackbarOpen}
-
-                message={snackbarMessage}
-
-                severity={snackbarSeverity}
-
-                onClose={() => setSnackbarOpen(false)}
-
-            />
 
         </MainLayout>
 

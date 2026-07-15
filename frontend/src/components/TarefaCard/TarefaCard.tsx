@@ -13,6 +13,7 @@ import {
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import FlagIcon from "@mui/icons-material/Flag";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import InfoIcon from "@mui/icons-material/Info";
 
 import type {
     Tarefa,
@@ -29,6 +30,8 @@ interface Props {
 
     onExcluir: (tarefa: Tarefa) => void;
 
+    onVerDetalhes?: (tarefa: Tarefa) => void;
+
     onStatusChange: (
         tarefa: Tarefa,
         status: StatusTarefa
@@ -43,6 +46,8 @@ export default function TarefaCard({
     onEditar,
 
     onExcluir,
+
+    onVerDetalhes,
 
     onStatusChange
 
@@ -189,26 +194,44 @@ export default function TarefaCard({
                 <Box
                     sx={{
                         display: "flex",
-                        gap: 2
+                        gap: 1,
+                        flexDirection: "column"
                     }}
                 >
 
-                    <Button
-                        fullWidth
-                        variant="outlined"
-                        onClick={() => onEditar(tarefa)}
-                    >
-                        Editar
-                    </Button>
+                    <Box sx={{ display: "flex", gap: 1 }}>
+                        <Button
+                            fullWidth
+                            size="small"
+                            variant="outlined"
+                            onClick={() => onEditar(tarefa)}
+                        >
+                            Editar
+                        </Button>
 
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        color="error"
-                        onClick={() => onExcluir(tarefa)}
-                    >
-                        Excluir
-                    </Button>
+                        <Button
+                            fullWidth
+                            size="small"
+                            variant="contained"
+                            color="error"
+                            onClick={() => onExcluir(tarefa)}
+                        >
+                            Excluir
+                        </Button>
+                    </Box>
+
+                    {onVerDetalhes && (
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            size="small"
+                            startIcon={<InfoIcon />}
+                            onClick={() => onVerDetalhes(tarefa)}
+                            sx={{ bgcolor: "info.main" }}
+                        >
+                            Detalhes
+                        </Button>
+                    )}
 
                 </Box>
 
