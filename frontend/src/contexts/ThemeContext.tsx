@@ -36,7 +36,7 @@ export function ThemeContextProvider({ children }: Props) {
     palette: {
       mode: darkMode ? "dark" : "light",
       primary: {
-        main: "#1E3A8A",
+        main: "#1e4fd6",
       },
       secondary: {
         main: "#0EA5E9",
