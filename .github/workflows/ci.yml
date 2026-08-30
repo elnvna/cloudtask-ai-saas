@@ -1,0 +1,62 @@
+name: CloudTask CI
+
+on:
+  push:
+    branches:
+      - main
+      - desenvolvimento
+      - feature-projeto-DEVOPS
+      - feature/docker
+
+  pull_request:
+    branches:
+      - main
+      - desenvolvimento
+
+jobs:
+  backend:
+    name: Backend - Python
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Instalar dependencias
+        working-directory: backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Validar aplicacao
+        working-directory: backend
+        run: |
+          python -m compileall app
+
+  frontend:
+    name: Frontend - React
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Instalar dependencias
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build do frontend
+        working-directory: frontend
+        run: npm run build
