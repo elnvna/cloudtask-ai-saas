@@ -1,4 +1,27 @@
 services:
+  postgres:
+    image: postgres:16
+    container_name: cloudtask_postgres
+
+    environment:
+      POSTGRES_DB: cloudtask
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d cloudtask"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+    restart: unless-stopped
+
   backend:
     build:
       context: ./backend
@@ -9,10 +32,17 @@ services:
       - "8000:8000"
 
     env_file:
-      - ./backend/.env
+      - ./.env
+
+    depends_on:
+      postgres:
+        condition: service_healthy
 
     volumes:
       - ./backend:/app
       - ./backend/uploads:/app/uploads
 
     restart: unless-stopped
+
+volumes:
+  postgres_data:
