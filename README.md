@@ -261,4 +261,4 @@ Para dúvidas ou problemas, abra uma issue no repositório.
 **Última atualização:** 2024
 **Versão:** 1.0.0
 
-Alteração realizada na branch feature/conflito-git.
+Alteração realizada na branch main e conflito resolvido com sucesso.
